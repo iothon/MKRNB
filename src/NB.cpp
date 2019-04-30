@@ -431,6 +431,15 @@ unsigned long NB::getLocalTime()
   return 0;
 }
 
+String NB::readPDPparameters() {
+  String response("");
+
+  MODEM.send("AT+CGCONTRDP=1");
+  MODEM.waitForResponse(100, &response);
+  response.remove(0, 12);
+  return response;
+}
+
 NB_NetworkStatus_t NB::status()
 {
   return _state;

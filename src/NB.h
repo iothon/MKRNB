@@ -75,6 +75,8 @@ public:
 
   NB_NetworkStatus_t status();
 
+  String readPDPparameters();
+
 private:
   NB_NetworkStatus_t _state;
   int _readyState;
