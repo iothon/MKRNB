@@ -156,25 +156,6 @@ int NB::ready()
         _state = ERROR;
         ready = 2;
       } else {
-        _readyState = READY_STATE_DETACH_DATA;
-        ready = 0;
-      }
-
-      break;
-    }
-
-    case READY_STATE_DETACH_DATA: {
-      MODEM.send("AT+CGATT=0");
-      _readyState = READY_STATE_WAIT_DETACH_DATA;
-      ready = 0;
-      break;
-    }
-
-    case READY_STATE_WAIT_DETACH_DATA:{
-      if (ready > 1) {
-        _state = ERROR;
-        ready = 2;
-      } else {
         _readyState = READY_STATE_CHECK_SIM;
         ready = 0;
       }
@@ -226,6 +207,25 @@ int NB::ready()
     }
 
     case READY_STATE_WAIT_UNLOCK_SIM_RESPONSE: {
+      if (ready > 1) {
+        _state = ERROR;
+        ready = 2;
+      } else {
+        _readyState = READY_STATE_DETACH_DATA;
+        ready = 0;
+      }
+
+      break;
+    }
+
+    case READY_STATE_DETACH_DATA: {
+      MODEM.send("AT+CGATT=0");
+      _readyState = READY_STATE_WAIT_DETACH_DATA;
+      ready = 0;
+      break;
+    }
+
+    case READY_STATE_WAIT_DETACH_DATA:{
       if (ready > 1) {
         _state = ERROR;
         ready = 2;
