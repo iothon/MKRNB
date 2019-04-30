@@ -447,5 +447,13 @@ void NBClient::handleUrc(const String& urc)
         _connected = false;
       }
     }
+    return;
+  }
+  // Handle socket close by the server / network
+  if (urc.startsWith("+UUSOCL: ")) {
+    int socket = urc.charAt(9) - '0';
+    if (socket == _socket) {
+      _connected = false;
+    }
   }
 }
