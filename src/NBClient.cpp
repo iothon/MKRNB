@@ -228,7 +228,8 @@ int NBClient::connect()
   }
 
   if (_synch) {
-    while (ready() == 0);
+    while (ready() == 0)
+      ;
   } else if (ready() == 0) {
     return 0;
   }
@@ -266,7 +267,8 @@ size_t NBClient::write(const uint8_t *buf)
 size_t NBClient::write(const uint8_t* buf, size_t size)
 {
   if (_writeSync) {
-    while (ready() == 0);
+    while (ready() == 0)
+      ;
   } else if (ready() == 0) {
     return 0;
   }
@@ -389,7 +391,8 @@ int NBClient::read()
 int NBClient::available()
 {
   if (_synch) {
-    while (ready() == 0);
+    while (ready() == 0)
+      ;
   } else if (ready() == 0) {
     return 0;
   }
