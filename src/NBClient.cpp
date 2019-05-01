@@ -428,6 +428,7 @@ void NBClient::stop()
     return;
   }
 
+  MODEM.debugf("NBClient: Closing the socket (may take several minutes)...\n");
   _state = CLIENT_STATE_CLOSE_SOCKET;
   while (!ready() && _state != CLIENT_STATE_IDLE)
     ;
@@ -436,6 +437,7 @@ void NBClient::stop()
 
   _socket = -1;
   _connected = false;
+  MODEM.debugf("NBClient: Closing the socket: closed.\n");
 }
 
 void NBClient::handleUrc(const String& urc)
