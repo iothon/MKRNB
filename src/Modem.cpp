@@ -198,6 +198,7 @@ void ModemClass::send(const char* command)
     delay(MODEM_MIN_RESPONSE_OR_URC_WAIT_TIME_MS - delta);
   }
 
+  debugf("MODEM: send: data='%s'\n", command);
   _uart->println(command);
   _uart->flush();
   _atCommandState = AT_COMMAND_IDLE;
@@ -261,12 +262,16 @@ int ModemClass::ready()
 
 void ModemClass::poll()
 {
+  if (!_uart->available())
+    return;
+
+  if (_debugPoll && _atCommandState != AT_RECEIVING_RESPONSE && _buffer == "") {
+    debugf("MODEM: poll: data='");
+  }
   while (_uart->available()) {
     char c = _uart->read();
 
-    if (_debugPrint) {
-      _debugPrint->write(c);
-    }
+    debugPoll(c);
 
     _buffer += c;
 
@@ -276,8 +281,13 @@ void ModemClass::poll()
 
         if (_buffer.startsWith("AT") && _buffer.endsWith("\r\n")) {
           _atCommandState = AT_RECEIVING_RESPONSE;
+          debugPoll("'\n");
+          debugf("MODEM: poll:   at='%s'\n", _buffer.c_str());
+          debugPoll("MODEM: poll: '");
           _buffer = "";
         }  else if (_buffer.endsWith("\r\n")) {
+          debugPoll("'\n");
+          debugf("MODEM: poll:  urc='%s'\n", _buffer.c_str());
           _buffer.trim();
 
           if (_buffer.length()) {
@@ -323,6 +333,9 @@ void ModemClass::poll()
           }
 
           if (_ready != 0) {
+            debugPoll("'\n");
+            debugf("MODEM: poll: resp='%s'\n", _buffer.c_str());
+
             if (_responseDataStorage != NULL) {
               if (_ready > 1) {
                 _buffer.substring(responseResultIndex);
@@ -338,6 +351,7 @@ void ModemClass::poll()
 
             _atCommandState = AT_COMMAND_IDLE;
             _buffer = "";
+            debugPoll("': return AT_COMMAND_IDLE\n");
             return;
           }
         }
