@@ -91,19 +91,21 @@ void ModemClass::end()
   digitalWrite(_powerOnPin, LOW);
 }
 
-void ModemClass::debug()
+void ModemClass::debug(bool debugPoll)
 {
-  debug(Serial);
+  debug(Serial, debugPoll);
 }
 
-void ModemClass::debug(Print& p)
+void ModemClass::debug(Print& p, bool debugPoll)
 {
   _debugPrint = &p;
+  _debugPoll  = debugPoll;
 }
 
 void ModemClass::noDebug()
 {
   _debugPrint = NULL;
+  _debugPoll  = false;
 }
 
 void ModemClass::debugf(const char *fmt, ...)
@@ -119,6 +121,22 @@ void ModemClass::debugf(const char *fmt, ...)
   va_end(ap);
 
   _debugPrint->print(buf);
+}
+
+void ModemClass::debugPoll(int c) {
+  if (_debugPrint && _debugPoll) {
+    if (isprint(c)) {
+      _debugPrint->write(c);
+    } else {
+      debugf("\\%03.3o", c);
+    }
+  }
+}
+
+void ModemClass::debugPoll(String s) {
+  if (_debugPoll) {
+    _debugPrint->print(s.c_str());
+  }
 }
 
 int ModemClass::autosense(unsigned long timeout)

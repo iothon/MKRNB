@@ -37,10 +37,12 @@ public:
   int begin(bool restart = true);
   void end();
 
-  void debug();
-  void debug(Print& p);
+  void debug(bool debugPoll = false);
+  void debug(Print& p, bool debugPoll = false);
   void noDebug();
   void debugf(const char *s, ...);
+  void debugPoll(int c);
+  void debugPoll(String s);
 
   int autosense(unsigned long timeout = 10000);
 
@@ -83,6 +85,7 @@ private:
   #define MAX_URC_HANDLERS 8 // 7 sockets + GPRS
   static ModemUrcHandler* _urcHandlers[MAX_URC_HANDLERS];
   static Print* _debugPrint;
+  bool _debugPoll;
 };
 
 extern ModemClass MODEM;
