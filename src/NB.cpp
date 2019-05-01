@@ -26,12 +26,12 @@
 enum {
   READY_STATE_SET_MINIMUM_FUNCTIONALITY_MODE,
   READY_STATE_WAIT_SET_MINIMUM_FUNCTIONALITY_MODE,
-  READY_STATE_DETACH_DATA,
-  READY_STATE_WAIT_DETACH_DATA,
   READY_STATE_CHECK_SIM,
   READY_STATE_WAIT_CHECK_SIM_RESPONSE,
   READY_STATE_UNLOCK_SIM,
   READY_STATE_WAIT_UNLOCK_SIM_RESPONSE,
+  READY_STATE_DETACH_DATA,
+  READY_STATE_WAIT_DETACH_DATA,
   READY_STATE_SET_PREFERRED_MESSAGE_FORMAT,
   READY_STATE_WAIT_SET_PREFERRED_MESSAGE_FORMAT_RESPONSE,
   READY_STATE_SET_HEX_MODE,
@@ -178,7 +178,7 @@ int NB::ready()
         ready = 0;
       } else {
         if (_response.endsWith("READY")) {
-          _readyState = READY_STATE_SET_PREFERRED_MESSAGE_FORMAT;
+          _readyState = READY_STATE_DETACH_DATA;
           ready = 0;
         } else if (_response.endsWith("SIM PIN")) {
           _readyState = READY_STATE_UNLOCK_SIM;
@@ -211,7 +211,7 @@ int NB::ready()
         _state = ERROR;
         ready = 2;
       } else {
-        _readyState = READY_STATE_DETACH_DATA;
+        _readyState = READY_STATE_CHECK_SIM;
         ready = 0;
       }
 
