@@ -424,13 +424,13 @@ void NBClient::flush()
 
 void NBClient::stop()
 {
-  _state = CLIENT_STATE_IDLE;
   if (_socket < 0) {
     return;
   }
 
-  MODEM.sendf("AT+USOCL=%d", _socket);
-  MODEM.waitForResponse(10000);
+  _state = CLIENT_STATE_CLOSE_SOCKET;
+  while (!ready() && _state != CLIENT_STATE_IDLE)
+    ;
 
   NBSocketBuffer.close(_socket);
 
