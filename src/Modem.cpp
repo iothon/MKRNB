@@ -311,25 +311,14 @@ void ModemClass::poll()
           _lastResponseOrUrcMillis = millis();
           int responseResultIndex;
 
-          responseResultIndex = _buffer.lastIndexOf("OK\r\n");
-
-          if (responseResultIndex != -1) {
+          if ((responseResultIndex = _buffer.lastIndexOf("OK\r\n")) != -1) {
             _ready = 1;
-          } else {
-            responseResultIndex = _buffer.lastIndexOf("ERROR\r\n");
-            if (responseResultIndex != -1) {
-              _ready = 2;
-            } else {
-              responseResultIndex = _buffer.lastIndexOf("NO CARRIER\r\n");
-              if (responseResultIndex != -1) {
-                _ready = 3;
-              } else {
-                responseResultIndex = _buffer.lastIndexOf("CME ERROR");
-                if (responseResultIndex != -1) {
-                  _ready = 4;
-                }
-              }
-            }
+          } else if ((responseResultIndex = _buffer.lastIndexOf("ERROR\r\n")) != -1) {
+            _ready = 2;
+          } else if ((responseResultIndex = _buffer.lastIndexOf("NO CARRIER\r\n")) != -1) {
+            _ready = 3;
+          } else if ((responseResultIndex = _buffer.lastIndexOf("CME ERROR")) != -1) {
+            _ready = 4;
           }
 
           if (_ready != 0) {
